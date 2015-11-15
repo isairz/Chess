@@ -49,6 +49,8 @@
     "webpack-hot-middleware": "^2.0.0"
   },
   "dependencies": {
+    "chess.js": "^0.9.1",
+    "chessboardjs": "0.0.1",
     "react": "^0.14.0",
     "react-dom": "^0.14.0"
   }

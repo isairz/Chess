@@ -18,7 +18,6 @@ app.use(express.static('asserts'));
 
 const proxy = httpProxy.createProxyServer({
   target: 'http://' + 'localhost' + ':' + 3040,
-   ws: true
 });
 app.use('/api', (req,res) => {
   proxy.web(req, res);

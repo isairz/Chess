@@ -73,5 +73,5 @@ app.listen(3040, function(err) {
     return;
   }
 
-  console.log('Listening at http://localhost:3000');
+  console.log('Listening at http://localhost:3040');
 });

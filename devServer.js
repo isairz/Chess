@@ -1,4 +1,5 @@
 var path = require('path');
+var httpProxy = require('http-proxy');
 var express = require('express');
 var webpack = require('webpack');
 var config = require('./webpack.config.dev');
@@ -14,6 +15,14 @@ app.use(require('webpack-dev-middleware')(compiler, {
 app.use(require('webpack-hot-middleware')(compiler));
 
 app.use(express.static('asserts'));
+
+const proxy = httpProxy.createProxyServer({
+  target: 'http://' + 'localhost' + ':' + 3040,
+   ws: true
+});
+app.use('/api', (req,res) => {
+  proxy.web(req, res);
+});
 
 app.listen(3000, function(err) {
   if (err) {

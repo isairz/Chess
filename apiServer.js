@@ -4,18 +4,17 @@ var child_process = require('child_process');
 
 var stockfish = child_process.spawn('./Stockfish/src/stockfish');
 
-var moveResponse;
+var resQueue = [];
 stockfish.stdout.on('data', (data) => {
   var str = '' + data;
   console.log('stdout: ' + str);
-  var match = str.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbk])?/);
-  if(match && moveResponse) {
-    moveResponse.json({
+  var match = str.match(/bestmove ([a-h][1-8])([a-h][1-8])([qrbk])?/);
+  if(match && resQueue.length) {
+    resQueue.shift().json({
       from: match[1],
       to: match[2],
       promotion: match[3],
     });
-    moveResponse = null;
   }
 });
 
@@ -64,9 +63,8 @@ app.get('/start', (req, res) => {
 
 app.get('/move/:moves', (req, res) => {
   command('position startpos moves ' + req.params.moves.replace(/_/g, ' '));
-  command('go  wtime 60000 winc 2000 btime 60000 binc 2000');
-  //command('eval');
-  moveResponse = res;
+  command('go movetime 1000');
+  resQueue.push(res);
 });
 
 app.listen(3040, function(err) {

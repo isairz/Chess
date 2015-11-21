@@ -5,7 +5,7 @@ var sp = new SerialPort("/dev/tty.usbmodem1411", {
   parser: serialport.parsers.readline("\r\n"),
 }, false); // this is the openImmediately flag [default is true]
 
-var cmdQueue = ['E 1'];
+var cmdQueue = [];
 var waitResponse = 'I\'m fine.';
 
 function pushCommand(cmd) {
@@ -24,6 +24,9 @@ function doCommand() {
 	console.log('  Request: ' + cmd);
 
 	switch(cmd[0]) {
+	case 'E':
+		waitResponse = 'ENABLE';
+		break;
 	case 'M':
 		waitResponse = 'Magnet';
 		break;
@@ -34,6 +37,7 @@ function doCommand() {
 	  waitResponse = 'Board';
 	  break;
   }
+  console.log('    Waiting: ' + waitResponse);
 
   sp.write(cmd + '\n');
 }
@@ -44,13 +48,21 @@ sp.open(function (error) {
   } else {
     console.log('open');
     sp.on('data', function(data) {
-      console.log('  Response: ' + data);
+      console.log('      Response: ' + data);
     	if (data.indexOf(waitResponse) != -1) {
     		setTimeout(doCommand, 0);
       }
     });
   }
 });
+
+function enableMoter(sw) {
+	pushCommand('E ' + sw);
+}
+function enableMagnet(sw) {
+	pushCommand('M ' + sw);
+}
+
 
 
 function move(fx, fy, tx, ty) {
@@ -73,3 +85,6 @@ process.stdin.on('readable', function() {
     }
 	}
 });
+
+enableMoter(1);
+enableMagnet(0);

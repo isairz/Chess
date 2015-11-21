@@ -5,13 +5,13 @@ var sp = new SerialPort("/dev/tty.usbmodem1411", {
   parser: serialport.parsers.readline("\r\n"),
 }, false); // this is the openImmediately flag [default is true]
 
-var cmdQueue = [];
+var cmdQueue = ['E 1'];
 var waitResponse = 'I\'m fine.';
 
 function pushCommand(cmd) {
 	cmdQueue.push(cmd);
 	if(cmdQueue.length === 1) {
-    setTimeout(doCommand, 0);
+    setTimeout(doCommand, 1000);
   }
 }
 
@@ -54,7 +54,6 @@ sp.open(function (error) {
 
 
 function move(fx, fy, tx, ty) {
-	console.log("!!!!");
 	console.log(`Move ${fx},${fy} -> ${tx},${ty}`);
 	pushCommand('S ' + fx + ' ' + fy);
 	pushCommand('M 1');
